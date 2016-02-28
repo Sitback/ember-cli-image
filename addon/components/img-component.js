@@ -13,12 +13,14 @@ import ImageLoaderMixin from '../mixins/image-loader-mixin';
   @class ImgComponent
   @extends Ember.Component
   @uses ImageLoaderMixin
+  @public
 **/
-var ImgComponent = Ember.Component.extend( ImageLoaderMixin, {
+export default Ember.Component.extend(ImageLoaderMixin, {
   tagName: 'img',
   attributeBindings: ['alt', 'width', 'height'],
 
   /**
+    @public
     @property imageLoader
     @type Object
     @default the img element itself
@@ -35,5 +37,3 @@ var ImgComponent = Ember.Component.extend( ImageLoaderMixin, {
     this.cancelImageLoad();
   })
 });
-
-export default ImgComponent;

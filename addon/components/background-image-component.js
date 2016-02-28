@@ -8,16 +8,15 @@ import ImageLoaderMixin from '../mixins/image-loader-mixin';
   @class BackgroundImageComponent
   @extends Ember.Component
   @uses ImageLoaderMixin
+  @public
 **/
-var BackgroundImageComponent = Ember.Component.extend( ImageLoaderMixin, {
+export default Ember.Component.extend(ImageLoaderMixin, {
   attributeBindings: ['style'],
   classNames: ['background-image'],
   applyStyle: Ember.on('willLoad', function(url) {
-    if(url) {
-      var backgroundImageStyle = 'background-image:url("' + url + '")';
+    if (url) {
+      let backgroundImageStyle = `background-image:url("${url}")`;
       this.set('style', backgroundImageStyle.htmlSafe());
     }
   })
 });
-
-export default BackgroundImageComponent;

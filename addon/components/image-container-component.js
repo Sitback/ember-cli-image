@@ -3,7 +3,7 @@ import ImageStateMixin from '../mixins/image-state-mixin';
 import ChildImgComponent from './internal/child-img-component';
 import ChildBackgroundImageComponent from './internal/child-background-image-component';
 
-var reads = Ember.computed.reads;
+const { reads } = Ember.computed;
 
 /**
   A container component with a stateful image as a child component.
@@ -17,8 +17,9 @@ var reads = Ember.computed.reads;
   @class ImageContainerComponent
   @extends Ember.ContainerView
   @uses ImageStateMixin
+  @public
 **/
-var ImageContainerComponent = Ember.ContainerView.extend( ImageStateMixin, {
+let ImageContainerComponent = new Ember.ContainerView.extend(ImageStateMixin, {
   classNames: ['image-view'],
   loadingClass: 'image-loading',
   errorClass: 'image-error',
@@ -30,6 +31,7 @@ var ImageContainerComponent = Ember.ContainerView.extend( ImageStateMixin, {
     @property background
     @type Boolean
     @default false
+    @public
   */
   background: false,
 
@@ -39,6 +41,7 @@ var ImageContainerComponent = Ember.ContainerView.extend( ImageStateMixin, {
     @property isLoading
     @type Boolean
     @default false
+    @public
   */
   isLoading: reads('imageView.isLoading'),
 
@@ -48,6 +51,7 @@ var ImageContainerComponent = Ember.ContainerView.extend( ImageStateMixin, {
     @property isError
     @type Boolean
     @default false
+    @public
   */
   isError: reads('imageView.isError'),
 
@@ -58,9 +62,10 @@ var ImageContainerComponent = Ember.ContainerView.extend( ImageStateMixin, {
     @property imageView
     @type Ember.View
     @default Ember.ImgView
+    @public
   */
   imageView: Ember.computed('background', function() {
-    if(this.get('background')) {
+    if (this.get('background')) {
       return ChildBackgroundImageComponent.create();
     }
     return ChildImgComponent.create();
@@ -77,6 +82,7 @@ var ImageContainerComponent = Ember.ContainerView.extend( ImageStateMixin, {
 
   /**
     @method _onImageViewChanged
+    @private
     Observes when the type of imageView is updated
     and recreates child views accordingly.
   */
@@ -89,5 +95,3 @@ var ImageContainerComponent = Ember.ContainerView.extend( ImageStateMixin, {
 
 // Manually register Handlebars helper since this doesn't extend from Ember.Component
 Ember.Handlebars.helper('image', ImageContainerComponent);
-
-export default ImageContainerComponent;

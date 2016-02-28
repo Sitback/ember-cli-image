@@ -6,7 +6,7 @@ import ImageStateMixin from './image-state-mixin';
   Smallest possible image data uri. 1x1 px transparent gif.
   Used to cancel a image request in progress.
   */
-var blankImg = 'data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==';
+const BLANK_IMG = 'data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==';
 
 /**
   Mixin to load images and handle state changes from
@@ -15,26 +15,32 @@ var blankImg = 'data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAA
   @class ImageLoaderMixin
   @uses Ember.Evented
   @uses ImageStateMixin
+  @public
 **/
-var ImageLoaderMixin = Ember.Mixin.create( Ember.Evented, ImageStateMixin, {
+export default Ember.Mixin.create(Ember.Evented, ImageStateMixin, {
   /**
     JavaScript Image Object used to do the loading.
 
     @property imageLoader
     @type Image
     @default Image
+    @public
   */
-  imageLoader: Ember.computed(function() { return new Image(); }),
+  imageLoader: Ember.computed(function() {
+    return new Image();
+  }),
 
   /**
     Loads the image src using native javascript Image object
     @method loadImage
+    @public
   */
-  loadImage: function() {
-    var url = this.get('url');
-    var component = this, img;
+  loadImage() {
+    let url = this.get('url');
+    let component = this;
+    let img = null;
 
-    if(url) {
+    if (url) {
       img = this.get('imageLoader');
       if (img) {
         this.trigger('willLoad', url);
@@ -62,32 +68,35 @@ var ImageLoaderMixin = Ember.Mixin.create( Ember.Evented, ImageStateMixin, {
   /**
     Cancels a pending image request.
     @method cancelImageLoad
+    @public
   */
-  cancelImageLoad: function() {
-    if(this.get('isLoading')) {
+  cancelImageLoad() {
+    if (this.get('isLoading')) {
       this.setProperties({ isLoading: false, isError: false });
       this.clearImage();
     }
   },
 
   /**
+   * @public
    * Clears an image to a blank state.
    * Useful for canceling, or when swapping urls
-    Notes:
-    - Removing img from the DOM does not cancel an img http request.
-    - Setting img src to null has unexpected results cross-browser.
+   * Notes:
+   * - Removing img from the DOM does not cancel an img http request.
+   * - Setting img src to null has unexpected results cross-browser.
    */
-  clearImage: function() {
-    var img = this.get('imageLoader');
-    if(img) {
+  clearImage() {
+    let img = this.get('imageLoader');
+    if (img) {
       img.onload = img.onerror = null;
-      img.src = blankImg;
+      img.src = BLANK_IMG;
     }
   },
 
   /**
     Loads the image when the view is initially inserted
     @method loadImageOnInsert
+    @public
   */
   loadImageOnInsert: Ember.on('didInsertElement', function() {
     Ember.run.scheduleOnce('afterRender', this, this.loadImage);
@@ -96,6 +105,7 @@ var ImageLoaderMixin = Ember.Mixin.create( Ember.Evented, ImageStateMixin, {
   /**
     Load an image whenever the url is changed.
     @method loadImageOnUrlSet
+    @public
   */
   loadImageOnUrlSet: Ember.observer('url', function() {
     Ember.run.scheduleOnce('afterRender', this, function() {
@@ -110,13 +120,10 @@ var ImageLoaderMixin = Ember.Mixin.create( Ember.Evented, ImageStateMixin, {
     @method _teardownLoader
   */
   _teardownLoader: Ember.on('willDestroyElement', function() {
-    var img = this.get('imageLoader');
-    if(img) {
+    let img = this.get('imageLoader');
+    if (img) {
       img = img.onload = img.onerror = null;
       this.set('imageLoader', null);
     }
   })
-
 });
-
-export default ImageLoaderMixin;
