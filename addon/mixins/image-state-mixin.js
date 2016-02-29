@@ -1,21 +1,22 @@
 import Ember from 'ember';
 
-var computed = Ember.computed;
+const { computed } = Ember;
 
 /**
   Mixin to track image loading/error state
   and update css classes accordingly.
 
   @class ImageState
+  @public
 **/
-
-var ImageStateMixin = Ember.Mixin.create({
+export default Ember.Mixin.create({
   classNameBindings: ['_loadingClass', '_errorClass'],
 
   /**
     @property src
     @type String
     @default null
+    @public
   */
   src: null,
 
@@ -23,6 +24,7 @@ var ImageStateMixin = Ember.Mixin.create({
     @property url
     @type String
     @default src
+    @public
     The final src to load. Gives mixins a chance to modify src
   */
   url: computed.reads('src'),
@@ -31,6 +33,7 @@ var ImageStateMixin = Ember.Mixin.create({
     @property isLoading
     @type Boolean
     @default if the src is initially set
+    @public
   */
   isLoading: true,
 
@@ -38,6 +41,7 @@ var ImageStateMixin = Ember.Mixin.create({
     @property isError
     @type Boolean
     @default false
+    @public
   */
   isError: false,
 
@@ -45,6 +49,7 @@ var ImageStateMixin = Ember.Mixin.create({
     @property loadingClass
     @type String
     @default 'loading'
+    @public
   */
   loadingClass: 'loading',
 
@@ -52,6 +57,7 @@ var ImageStateMixin = Ember.Mixin.create({
     @property errorClass
     @type String
     @default 'error'
+    @public
   */
   errorClass: 'error',
 
@@ -65,12 +71,26 @@ var ImageStateMixin = Ember.Mixin.create({
     @property errorClass
   */
   _loadingClass: computed('isLoading', function() {
-    if(this.get('isLoading')) { return this.get('loadingClass'); }
+    if (this.get('isLoading')) {
+      return this.get('loadingClass');
+    }
   }),
 
   _errorClass: computed('isError', function() {
-    if(this.get('isError')) { return this.get('errorClass'); }
-  })
-});
+    if (this.get('isError')) {
+      return this.get('errorClass');
+    }
+  }),
 
-export default ImageStateMixin;
+  /**
+    @property actions
+    @type Object
+    @private
+  */
+  actions: {
+    statusChanged(props) {
+      // Set loading properties from child component.
+      this.setProperties(props);
+    }
+  }
+});
