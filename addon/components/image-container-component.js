@@ -1,7 +1,7 @@
 import Ember from 'ember';
 import ImageStateMixin from '../mixins/image-state-mixin';
-import ChildImgComponent from './internal/child-img-component';
-import ChildBackgroundImageComponent from './internal/child-background-image-component';
+import ImgComponent from './img-component';
+import BackgroundImageComponent from './background-image-component';
 
 const { reads } = Ember.computed;
 
@@ -15,14 +15,15 @@ const { reads } = Ember.computed;
   ```
 
   @class ImageContainerComponent
-  @extends Ember.ContainerView
+  @extends Ember.Component
   @uses ImageStateMixin
   @public
 **/
-let ImageContainerComponent = new Ember.ContainerView.extend(ImageStateMixin, {
+export default Ember.Component.extend(ImageStateMixin, {
   classNames: ['image-view'],
   loadingClass: 'image-loading',
   errorClass: 'image-error',
+  childComponents: [],
 
   /**
     If `background` is true, the container uses a `BackgroundImageView`
@@ -66,9 +67,9 @@ let ImageContainerComponent = new Ember.ContainerView.extend(ImageStateMixin, {
   */
   imageView: Ember.computed('background', function() {
     if (this.get('background')) {
-      return ChildBackgroundImageComponent.create();
+      return BackgroundImageComponent.create();
     }
-    return ChildImgComponent.create();
+    return ImgComponent.create();
   }),
 
   /**
@@ -77,7 +78,7 @@ let ImageContainerComponent = new Ember.ContainerView.extend(ImageStateMixin, {
     Adds the sole child imageView
   */
   _addImageViewChild: Ember.on('init', function() {
-    this.pushObject(this.get('imageView'));
+    this.childComponents.push(this.get('imageView'));
   }),
 
   /**
@@ -87,11 +88,8 @@ let ImageContainerComponent = new Ember.ContainerView.extend(ImageStateMixin, {
     and recreates child views accordingly.
   */
   _onImageViewChanged: Ember.observer('imageView', function() {
-    this.removeAllChildren();
+    this.childComponents = [];
     this._addImageViewChild();
   })
 
 });
-
-// Manually register Handlebars helper since this doesn't extend from Ember.Component
-Ember.Handlebars.helper('image', ImageContainerComponent);
