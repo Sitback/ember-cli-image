@@ -80,5 +80,17 @@ export default Ember.Mixin.create({
     if (this.get('isError')) {
       return this.get('errorClass');
     }
-  })
+  }),
+
+  /**
+    @property actions
+    @type Object
+    @private
+  */
+  actions: {
+    statusChanged(props) {
+      // Set loading properties from child component.
+      this.setProperties(props);
+    }
+  }
 });

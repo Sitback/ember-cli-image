@@ -44,18 +44,18 @@ export default Ember.Mixin.create(Ember.Evented, ImageStateMixin, {
       img = this.get('imageLoader');
       if (img) {
         this.trigger('willLoad', url);
-        this.setProperties({ isLoading: true, isError: false });
+        this.send('loadStatusChanged', { isLoading: true, isError: false });
 
         img.onload = function(e) {
           Ember.run(function() {
-            component.setProperties({ isLoading: false, isError: false });
+            component.send('loadStatusChanged', { isLoading: false, isError: false });
             component.trigger('didLoad', img, e);
           });
         };
 
         img.onerror = function(e) {
           Ember.run(function() {
-            component.setProperties({ isLoading: false, isError: true });
+            component.send('loadStatusChanged', { isLoading: false, isError: true });
             component.trigger('becameError', img, e);
           });
         };
@@ -125,5 +125,20 @@ export default Ember.Mixin.create(Ember.Evented, ImageStateMixin, {
       img = img.onload = img.onerror = null;
       this.set('imageLoader', null);
     }
-  })
+  }),
+
+  /**
+    @property actions
+    @type Object
+    @private
+  */
+  actions: {
+    loadStatusChanged(props) {
+      this.setProperties(props);
+
+      // Bubble load status up to any parent components
+      // (e.g. 'image-container').
+      this.sendAction('action', props);
+    }
+  }
 });
