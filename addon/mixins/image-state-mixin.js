@@ -35,7 +35,7 @@ export default Ember.Mixin.create({
     @default if the src is initially set
     @public
   */
-  isLoading: true,
+  isLoading: false,
 
   /**
     @property isError
