@@ -1,6 +1,8 @@
 import Ember from 'ember';
 import ImageStateMixin from './image-state-mixin';
 
+const { isEmpty } = Ember;
+
 /**
   @private
   Smallest possible image data uri. 1x1 px transparent gif.
@@ -42,7 +44,7 @@ export default Ember.Mixin.create(Ember.Evented, ImageStateMixin, {
 
     if (url) {
       img = this.get('imageLoader');
-      if (img && img.src === BLANK_IMG) {
+      if (img && (isEmpty(img.src) || img.src === BLANK_IMG)) {
         this.trigger('willLoad', url);
         this.send('loadStatusChanged', { isLoading: true, isError: false });
 
