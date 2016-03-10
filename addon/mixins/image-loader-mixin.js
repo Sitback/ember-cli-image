@@ -42,7 +42,7 @@ export default Ember.Mixin.create(Ember.Evented, ImageStateMixin, {
 
     if (url) {
       img = this.get('imageLoader');
-      if (img) {
+      if (img && img.src === BLANK_IMG) {
         this.trigger('willLoad', url);
         this.send('loadStatusChanged', { isLoading: true, isError: false });
 
