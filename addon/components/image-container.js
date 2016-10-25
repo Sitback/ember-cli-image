@@ -4,8 +4,6 @@ import ImageStateMixin from '../mixins/image-state-mixin';
 // import StatefulImg from './stateful-img';
 // import BackgroundImage from './background-image';
 
-const { reads } = Ember.computed;
-
 /**
   A container component with a stateful image as a child component.
   Class names are updated according to the image's state.
